@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!-- RedisStandaloneConfiguration 指定是单机版的redis的配置 配置redis的地址和端口
+     JedisConnectionFactory 指定创建连接对象 用于连接redis
+     RedisTemplate 操作redis的核心类-->
+
+    <!--单机版的配置-->
+    <bean class="org.springframework.data.redis.connection.RedisStandaloneConfiguration" id="standaloneConfig">
+        <property name="hostName" value="192.168.111.135"/>
+        <property name="port" value="6379"/>
+    </bean>
+
+    <bean class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory" id="connectionFactory">
+        <constructor-arg name="standaloneConfig" ref="standaloneConfig"/>
+    </bean>
+
+    <!--redisTemplate-->
+    <bean class="org.springframework.data.redis.core.RedisTemplate" id="redisTemplate">
+        <property name="connectionFactory" ref="connectionFactory"/>
+    </bean>
+
+</beans>

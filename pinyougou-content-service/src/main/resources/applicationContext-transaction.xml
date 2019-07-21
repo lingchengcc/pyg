@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                            http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+                            http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+    <import resource="applicationContext-dao.xml"/>
+    <import resource="applicationContext-service.xml"/>
+    <import resource="classpath:applicationContext-redis.xml"/>
+    <!-- 配置事务管理器 -->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+    <!--配置事务通知-->
+    <tx:advice id="txAdvice">
+        <tx:attributes>
+            <tx:method name="save*"/>
+            <tx:method name="add*"/>
+            <tx:method name="create*"/>
+            <tx:method name="update*"/>
+            <tx:method name="edit*"/>
+            <tx:method name="delete*"/>
+            <tx:method name="remove*"/>
+            <tx:method name="find*" propagation="SUPPORTS" read-only="true"/>
+            <tx:method name="get*" propagation="SUPPORTS" read-only="true"/>
+        </tx:attributes>
+    </tx:advice>
+    <!--配置切面-->
+    <aop:config>
+        <aop:advisor advice-ref="txAdvice" pointcut="execution(* com.pinyougou.content.service.impl.*.*(..))"/>
+    </aop:config>
+
+</beans>

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <!-- 页面meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>商品管理</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" name="viewport">
+    <link rel="stylesheet" href="../plugins/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../plugins/adminLTE/css/AdminLTE.css">
+    <link rel="stylesheet" href="../plugins/adminLTE/css/skins/_all-skins.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="../plugins/jQuery/jquery-2.2.3.min.js"></script>
+    <script src="../plugins/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../plugins/vue/vue.js"></script>
+    <script src="../plugins/axios/axios.js"></script>
+
+</head>
+
+<body class="hold-transition skin-red sidebar-mini">
+<!-- .box-body -->
+<div id="app">
+    <div class="box-header with-border">
+        <h3 class="box-title">商品审核</h3>
+    </div>
+
+    <div class="box-body">
+        <!-- 数据表格 -->
+        <div class="table-box">
+            <!--工具栏-->
+            <div class="pull-left">
+                <div class="form-group form-inline">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default" title="删除" @click="dele()"><i
+                                class="fa fa-trash-o"></i> 删除
+                        </button>
+                        <button type="button" class="btn btn-default" title="审核通过" @click="updateStatus(2)"><i
+                                class="fa fa-check"></i> 审核通过
+                        </button>
+                        <button type="button" class="btn btn-default" title="驳回" @click="updateStatus(3)"><i
+                                class="fa fa-ban"></i> 驳回
+                        </button>
+                        <button type="button" class="btn btn-default" title="刷新"><i class="fa fa-refresh"></i> 刷新
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="box-tools pull-right">
+                <div class="has-feedback">
+                    商品名称：<input>
+                    <button class="btn btn-default">查询</button>
+                </div>
+            </div>
+            <!--工具栏/-->
+
+            <!--数据列表-->
+            <table id="dataList" class="table table-bordered table-striped table-hover dataTable">
+                <thead>
+                <tr>
+                    <th class="" style="padding-right:0px">
+                        <input id="selall" type="checkbox" class="icheckbox_square-blue">
+                    </th>
+                    <th class="sorting_asc">商品ID</th>
+                    <th class="sorting">商品名称</th>
+                    <th class="sorting">商品价格</th>
+                    <th class="sorting">秒杀价</th>
+                    <th class="sorting">开始时间</th>
+                    <th class="sorting">结束时间</th>
+                    <th class="sorting">数量</th>
+                    <th class="sorting">库存量</th>
+                    <th class="sorting">状态</th>
+                    <th class="text-center">操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="entity in list">
+                    <td><input type="checkbox" v-model="ids" :value="entity.id"></td>
+                    <td>{{entity.id}}</td>
+                    <td>{{entity.title}}</td>
+                    <td>{{entity.price}}</td>
+                    <td>{{entity.costPrice}}</td>
+                    <td>{{entity.startTime}}</td>
+                    <td>{{entity.endTime}}</td>
+                    <td>{{entity.num}}</td>
+                    <td>{{entity.stockCount}}</td>
+                    <td v-if="entity.status==1">未审核</td>
+                    <td class="text-center">
+                        <button type="button" class="btn bg-olive btn-xs" data-toggle="modal"
+                                data-target="#goodsModal"
+                                @click="findOne(entity.sellerId)">详情
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <!--数据列表/-->
+            <!--pages:指定总页数 pageNo：当前页码  searchList:定义的函数 用于在点击下一页的调用-->
+            <navigation :pages="pages" :current.sync="pageNo" @navpage="searchList"></navigation>
+        </div>
+        <!-- 数据表格 /-->
+    </div>
+    <!-- 商家详情 -->
+    <div class="modal fade" id="goodsModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h3 id="myModalLabel">商品详情</h3>
+                </div>
+                <div class="modal-body">
+
+                    <ul class="nav nav-tabs">
+                        <li class="active"><a href="#home" data-toggle="tab">商品基本信息</a></li>
+                        <li><a href="#linkman" data-toggle="tab">商品图片</a></li>
+                        <li><a href="#ceo" data-toggle="tab">规格</a></li>
+                        <li><a href="#certificate" data-toggle="tab">售后保障</a></li>
+                    </ul>
+
+                    <!-- 选项卡开始 -->
+                    <div id="myTabContent" class="tab-content">
+                        <div class="tab-pane active in" id="home">
+                            <br>
+                            <table class="table table-bordered table-striped" width="800px">
+                                <tr>
+                                    <td>商品分类</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>商品名称</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>品牌</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>副标题</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>价格</td>
+                                    <td></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="tab-pane fade" id="linkman">
+                            <br>
+                            <table class="table table-bordered table-striped">
+                                <tr>
+                                    <td>颜色</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>图片</td>
+                                    <td></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="tab-pane fade" id="ceo">
+                            <br>
+                            <table class="table table-bordered table-striped">
+                                <tr>
+                                    <td>规格</td>
+                                    <td></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="tab-pane fade" id="certificate">
+                            <br>
+                            <table class="table table-bordered table-striped">
+                                <tr>
+                                    <td>商品介绍</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>包装列表</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>售后服务</td>
+                                    <td></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- 选项卡结束 -->
+
+
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-success" @click="update(1)" data-dismiss="modal" aria-hidden="true">
+                        审核通过
+                    </button>
+                    <button class="btn btn-danger" @click="update(2)" data-dismiss="modal" aria-hidden="true">
+                        审核未通过
+                    </button>
+                    <button class="btn btn-danger" @click="update(3)" data-dismiss="modal" aria-hidden="true">
+                        关闭商家
+                    </button>
+                    <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /.box-body -->
+</div>
+<script src="../js/pagination.js"></script>
+<script src="../js/controller/seckillGoodsController.js"></script>
+</body>
+
+</html>

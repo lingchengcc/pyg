@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <bean id="producer" class="org.apache.rocketmq.client.producer.DefaultMQProducer" init-method="start"
+          destroy-method="shutdown">
+        <property name="namesrvAddr" value="192.168.111.135:9876"/>
+        <property name="producerGroup" value="producer_sms_service_group"/>
+    </bean>
+</beans>
