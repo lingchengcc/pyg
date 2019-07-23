@@ -34,7 +34,7 @@ public class GoodsTask {
         Example example = new Example(SeckillGoods.class);
         Example.Criteria criteria = example.createCriteria();
         //审核通过
-        criteria.andEqualTo("status", "1");
+        criteria.andEqualTo("status", "2");
         //库存大于0
         criteria.andGreaterThan("stockCount", 0);
         final Date date = new Date();
@@ -51,7 +51,17 @@ public class GoodsTask {
         //存储到redis中
         for (SeckillGoods seckillGoods : seckillGoodsList) {
             redisTemplate.boundHashOps(SysConstants.SEC_KILL_GOODS).put(seckillGoods.getId(), seckillGoods);
+            pushGoodsList(seckillGoods);
         }
 
     }
+
+    private void pushGoodsList(SeckillGoods goods) {
+        //向同一个队列中压入商品数据
+        for (Integer i = 0; i < goods.getStockCount(); i++) {
+            //库存为多少就是多少个SIZE 值就是id即可
+            redisTemplate.boundListOps(SysConstants.SEC_KILL_GOODS_PREFIX + goods.getId()).leftPush(goods.getId());
+        }
+    }
+
 }

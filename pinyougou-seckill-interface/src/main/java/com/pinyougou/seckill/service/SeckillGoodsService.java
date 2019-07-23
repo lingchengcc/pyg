@@ -6,6 +6,7 @@ import com.pinyougou.core.service.CoreService;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 服务层接口
@@ -49,4 +50,6 @@ public interface SeckillGoodsService extends CoreService<SeckillGoods> {
     void genItemHtml(SeckillGoods seckillGoods) throws IOException;
 
     void deleteById(Long[] ids);
+
+    Map getGoodsById(Long id);
 }

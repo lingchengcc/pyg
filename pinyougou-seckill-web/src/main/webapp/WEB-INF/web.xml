@@ -4,7 +4,7 @@
                              http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
          version="4.0">
     <welcome-file-list>
-        <welcome-file>home-index.html</welcome-file>
+        <welcome-file>sexkill-index.html</welcome-file>
     </welcome-file-list>
     <servlet>
         <servlet-name>DispatcherServlet</servlet-name>

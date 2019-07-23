@@ -12,4 +12,8 @@
         <property name="templateLoaderPath" value="/WEB-INF/ftl/"/>
         <property name="defaultEncoding" value="UTF-8"/>
     </bean>
+    <bean class="com.pinyougou.common.util.IdWorker">
+        <constructor-arg name="workerId" value="0"/>
+        <constructor-arg name="datacenterId" value="0"/>
+    </bean>
 </beans>

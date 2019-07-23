@@ -2,9 +2,7 @@ package com.pinyougou.seckill.service.impl;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 import com.pinyougou.common.entity.SysConstants;
 import com.pinyougou.pojo.*;
@@ -19,6 +17,7 @@ import com.github.pagehelper.PageInfo;
 import org.apache.commons.lang3.StringUtils;
 import com.pinyougou.core.service.CoreServiceImpl;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 import tk.mybatis.mapper.entity.Example;
 import com.pinyougou.mapper.SeckillGoodsMapper;
@@ -35,6 +34,9 @@ public class SeckillGoodsServiceImpl extends CoreServiceImpl<SeckillGoods> imple
     private SeckillGoodsMapper seckillGoodsMapper;
 
     @Autowired
+    private RedisTemplate redisTemplate;
+
+    @Autowired
     private FreeMarkerConfigurer freeMarkerConfigurer;
 
     @Value("${pageDir}")
@@ -44,6 +46,11 @@ public class SeckillGoodsServiceImpl extends CoreServiceImpl<SeckillGoods> imple
     public SeckillGoodsServiceImpl(SeckillGoodsMapper seckillGoodsMapper) {
         super(seckillGoodsMapper, SeckillGoods.class);
         this.seckillGoodsMapper = seckillGoodsMapper;
+    }
+
+    @Override
+    public List<SeckillGoods> findAll() {
+        return redisTemplate.boundHashOps(SysConstants.SEC_KILL_GOODS).values();
     }
 
     @Override
@@ -147,6 +154,19 @@ public class SeckillGoodsServiceImpl extends CoreServiceImpl<SeckillGoods> imple
                 }
             }
         }
+    }
+    @Override
+    public Map getGoodsById(Long id) {
+        SeckillGoods tbSeckillGoods = (SeckillGoods) redisTemplate.boundHashOps(SysConstants.SEC_KILL_GOODS).get(id);
+        Map map = new HashMap();
+        if(tbSeckillGoods!=null ){
+
+            //剩余时间毫秒数
+            map.put("time",tbSeckillGoods.getEndTime().getTime()-System.currentTimeMillis());
+            map.put("count",tbSeckillGoods.getStockCount());
+            return map;
+        }
+        return map;
     }
 
 }

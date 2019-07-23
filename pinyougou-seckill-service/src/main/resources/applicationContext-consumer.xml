@@ -20,4 +20,23 @@
         <!--设置消费者监听器-->
         <property name="messageListener" ref="pageMessageListener"/>
     </bean>
+
+    <bean class="org.apache.rocketmq.client.consumer.DefaultMQPushConsumer" id="defaultMQPushConsumerDelay" init-method="start" destroy-method="shutdown">
+        <property name="namesrvAddr" value="192.168.111.135:9876"/>
+        <property name="consumerGroup" value="consumer_seckill_Delay_group"/>
+        <!--广播的模式  可以多个消费者一起消费一个消息 ，也就是说一个消费者可以被多个消费者消费-->
+        <property name="messageModel" value="CLUSTERING"/>
+
+        <property name="subscription">
+            <map>
+                <!--主题 goods_topic 下的Tags_genHtml tag的消息-->
+                <entry  key="TOPIC_SECKILL_DELAY" value="TAG_SECKILL_DELAY"/>
+            </map>
+        </property>
+
+        <property name="messageListener" ref="delayMessageListener"/>
+    </bean>
+    <!--监听器 对象 用于监听消息  获取消息内容进行相关的操作-->
+    <bean class="com.pinyougou.seckill.listener.DelayMessageListener" id="delayMessageListener"/>
+
 </beans>

@@ -13,11 +13,15 @@
     <http pattern="/plugins/**" security="none"/>
     <http pattern="/seckill-*.html" security="none"/>
     <http pattern="/seckillGoods/*.shtml" security="none"/>
+    <http pattern="/*.html" security="none"/>
+    <http pattern="/seckillGoods/*/*.shtml" security="none"/>
 
     <!--   entry-point-ref  入口点引用 -->
     <http use-expressions="false" entry-point-ref="casProcessingFilterEntryPoint">
         <!--匿名用户访问-->
         <intercept-url pattern="/favicon.ico" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
+        <intercept-url pattern="/seckillOrder/*/*.shtml" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
+        <intercept-url pattern="/seckillOrder/*.shtml" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
         <intercept-url pattern="/**" access="ROLE_USER"/>
         <csrf disabled="true"/>
         <!-- custom-filter为过滤器， position 表示将过滤器放在指定的位置上，before表示放在指定位置之前  ，after表示放在指定的位置之后  -->
@@ -67,7 +71,7 @@
         <beans:property name="key" value="an_id_for_this_auth_provider_only"/>
     </beans:bean>
     <!-- 认证类 -->
-    <beans:bean id="userDetailsService" class="com.pinyougou.cart.security.UserDetailsServiceImpl"/>
+    <beans:bean id="userDetailsService" class="com.pinyougou.seckill.security.UserDetailsServiceImpl"/>
 
     <!-- 认证过滤器 结束 -->
 

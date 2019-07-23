@@ -23,4 +23,6 @@ public interface WeChatPayService {
      * @param out_trade_no
      */
     public Map<String, String> queryPayStatus(String out_trade_no);
+
+    Map<String, String> closePay(String out_trade_no);
 }
